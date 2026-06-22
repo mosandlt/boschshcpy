@@ -919,6 +919,10 @@ class SHCHeatingCircuit(SHCDevice):
     def on(self) -> bool:
         return self._heating_circuit_service.on
 
+    @property
+    def heating_type(self):
+        return self._heating_circuit_service.heating_type
+
 
 class SHCWallThermostat(SHCBatteryDevice, _TemperatureLevel, _HumidityLevel, _Thermostat):
     pass

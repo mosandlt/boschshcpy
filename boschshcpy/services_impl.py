@@ -163,6 +163,14 @@ class HeatingCircuitService(SHCDeviceService):
         AUTOMATIC = "AUTOMATIC"
         MANUAL = "MANUAL"
 
+    class HeatingType(Enum):
+        RADIATOR = "RADIATOR"
+        CONVECTOR = "CONVECTOR"
+        FLOOR = "FLOOR"
+        AIRHEATING = "AIRHEATING"
+        FANCOIL = "FANCOIL"
+        UNKNOWN = "UNKNOWN"
+
     @property
     def operation_mode(self) -> OperationMode:
         return self.OperationMode(self.state["operationMode"])
@@ -211,6 +219,16 @@ class HeatingCircuitService(SHCDeviceService):
     def on(self) -> bool:
         return self.state.get("on", False)
 
+    @property
+    def heating_type(self):
+        raw = self.state.get("heatingType")
+        if raw is None:
+            return None
+        try:
+            return self.HeatingType(raw)
+        except ValueError:
+            return self.HeatingType.UNKNOWN
+
     def summary(self):
         super().summary()
         print(f"    Operation Mode             : {self.operation_mode}")
@@ -225,6 +243,7 @@ class HeatingCircuitService(SHCDeviceService):
         )
         print(f"    Energy Saving Feat Enabled : {self.energy_saving_feature_enabled}")
         print(f"    On                         : {self.on}")
+        print(f"    Heating Type               : {self.heating_type}")
 
 
 class SilentModeService(SHCDeviceService):
@@ -302,13 +321,21 @@ class ValveTappetService(SHCDeviceService):
     class State(Enum):
         VALVE_ADAPTION_SUCCESSFUL = "VALVE_ADAPTION_SUCCESSFUL"
         VALVE_ADAPTION_IN_PROGRESS = "VALVE_ADAPTION_IN_PROGRESS"
+        VALVE_ADAPTION_REQUESTED = "VALVE_ADAPTION_REQUESTED"
         RANGE_TOO_BIG = "RANGE_TOO_BIG"
+        RANGE_TOO_SMALL = "RANGE_TOO_SMALL"
         RUN_TO_START_POSITION = "RUN_TO_START_POSITION"
+        START_POSITION_REQUESTED = "START_POSITION_REQUESTED"
         IN_START_POSITION = "IN_START_POSITION"
         NOT_AVAILABLE = "NOT_AVAILABLE"
         NO_VALVE_BODY_ERROR = "NO_VALVE_BODY_ERROR"
         NO_MOTOR_ERROR = "NO_MOTOR_ERROR"
         VALVE_TOO_TIGHT = "VALVE_TOO_TIGHT"
+        FIX_MOTOR_LOGIC_REQUESTED = "FIX_MOTOR_LOGIC_REQUESTED"
+        FIX_MOTOR_LOGIC_IN_PROGRESS = "FIX_MOTOR_LOGIC_IN_PROGRESS"
+        FIX_MOTOR_LOGIC_SUCCESSFUL = "FIX_MOTOR_LOGIC_SUCCESSFUL"
+        ERROR = "ERROR"
+        UNKNOWN = "UNKNOWN"
 
     @property
     def position(self) -> int:
@@ -816,6 +843,10 @@ class OccupancyDetectionService(SHCDeviceService):
             if "lastOccupancyChangeTime" in self.state
             else "n/a"
         )
+
+    @property
+    def last_occupancy_change_time(self):
+        return self.state.get("lastOccupancyChangeTime")
 
     def summary(self):
         super().summary()
