@@ -874,6 +874,13 @@ class SmartSensitivityControlService(SHCDeviceService):
         COMFORT = "COMFORT"
         UNKNOWN = "UNKNOWN"
 
+    # APK: SmartSensitivitySetting.manualLevel / automaticLevel type is MotionSensitivity
+    class MotionSensitivity(Enum):
+        HIGH = "HIGH"
+        MIDDLE = "MIDDLE"
+        LOW = "LOW"
+        UNKNOWN = "UNKNOWN"
+
     @property
     def enabled(self) -> bool:
         return bool(self.state.get("enabled", False))
@@ -900,25 +907,38 @@ class SmartSensitivityControlService(SHCDeviceService):
     async def async_set_enabled(self, value: bool):
         await self.async_put_state_element("enabled", value)
 
-    def set_manual_level(self, context: "SmartSensitivityControlService.SmartSensitivityContext", level: int):
-        """Set manualLevel for the given context. Sends the full sensitivities array."""
+    def set_manual_level(
+        self,
+        context: "SmartSensitivityControlService.SmartSensitivityContext",
+        level: "SmartSensitivityControlService.MotionSensitivity",
+    ):
+        """Set manualLevel (MotionSensitivity enum) for the given context.
+
+        APK: manualLevel and automaticLevel are MotionSensitivity enum strings
+        (HIGH/MIDDLE/LOW/UNKNOWN). automaticLevel is read-only from the SHC;
+        it is round-tripped in the PUT payload unchanged from the state dict.
+        """
         ctx_value = context.value if hasattr(context, "value") else context
+        level_value = level.value if hasattr(level, "value") else level
         updated = []
         for entry in self.sensitivities:
             if entry.get("context") == ctx_value:
-                entry = {**entry, "manualLevel": level}
+                entry = {**entry, "manualLevel": level_value}
             updated.append(entry)
         self.put_state({"enabled": self.enabled, "sensitivities": updated})
 
     async def async_set_manual_level(
-        self, context: "SmartSensitivityControlService.SmartSensitivityContext", level: int
+        self,
+        context: "SmartSensitivityControlService.SmartSensitivityContext",
+        level: "SmartSensitivityControlService.MotionSensitivity",
     ):
         """Async version of set_manual_level."""
         ctx_value = context.value if hasattr(context, "value") else context
+        level_value = level.value if hasattr(level, "value") else level
         updated = []
         for entry in self.sensitivities:
             if entry.get("context") == ctx_value:
-                entry = {**entry, "manualLevel": level}
+                entry = {**entry, "manualLevel": level_value}
             updated.append(entry)
         await self.async_put_state({"enabled": self.enabled, "sensitivities": updated})
 
@@ -931,17 +951,17 @@ class SmartSensitivityControlService(SHCDeviceService):
 class WalkTestService(SHCDeviceService):
     class WalkState(Enum):
         WALK_TEST_STARTED = "WALK_TEST_STARTED"
-        STOPPED = "STOPPED"
+        WALK_TEST_STOPPED = "WALK_TEST_STOPPED"  # APK: WalkTestState.WalkState
         UNKNOWN = "UNKNOWN"
 
     class WalkStateRequest(Enum):
         WALK_STATE_START = "WALK_STATE_START"
-        STOP = "STOP"
+        WALK_STATE_STOP = "WALK_STATE_STOP"  # APK: WalkTestState.WalkStateRequest
         UNKNOWN = "UNKNOWN"
 
     class PetImmunityState(Enum):
         PET_IMMUNITY_ENABLED = "PET_IMMUNITY_ENABLED"
-        DISABLED = "DISABLED"
+        PET_IMMUNITY_DISABLED = "PET_IMMUNITY_DISABLED"  # APK: WalkTestState.PetImmunityState
         UNKNOWN = "UNKNOWN"
 
     @property

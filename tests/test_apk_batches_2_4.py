@@ -436,8 +436,8 @@ class TestWalkTestService:
 
     def test_walk_state_stopped(self):
         from boschshcpy.services_impl import WalkTestService
-        svc = self._svc(walkState="STOPPED")
-        assert svc.walk_state == WalkTestService.WalkState.STOPPED
+        svc = self._svc(walkState="WALK_TEST_STOPPED")
+        assert svc.walk_state == WalkTestService.WalkState.WALK_TEST_STOPPED
 
     def test_walk_state_unknown_explicit(self):
         from boschshcpy.services_impl import WalkTestService
@@ -461,8 +461,8 @@ class TestWalkTestService:
 
     def test_walk_state_request_stop(self):
         from boschshcpy.services_impl import WalkTestService
-        svc = self._svc(walkStateRequest="STOP")
-        assert svc.walk_state_request == WalkTestService.WalkStateRequest.STOP
+        svc = self._svc(walkStateRequest="WALK_STATE_STOP")
+        assert svc.walk_state_request == WalkTestService.WalkStateRequest.WALK_STATE_STOP
 
     def test_walk_state_request_missing_returns_unknown(self):
         from boschshcpy.services_impl import WalkTestService
@@ -481,8 +481,8 @@ class TestWalkTestService:
 
     def test_pet_immunity_state_disabled(self):
         from boschshcpy.services_impl import WalkTestService
-        svc = self._svc(petImmunityState="DISABLED")
-        assert svc.pet_immunity_state == WalkTestService.PetImmunityState.DISABLED
+        svc = self._svc(petImmunityState="PET_IMMUNITY_DISABLED")
+        assert svc.pet_immunity_state == WalkTestService.PetImmunityState.PET_IMMUNITY_DISABLED
 
     def test_pet_immunity_state_missing_returns_unknown(self):
         from boschshcpy.services_impl import WalkTestService
@@ -536,9 +536,10 @@ class TestSmartSensitivityControlService:
         return _make_svc(SmartSensitivityControlService, state)
 
     def _sample_sensitivities(self):
+        # APK: manualLevel + automaticLevel are MotionSensitivity enum strings
         return [
-            {"context": "SECURITY", "automaticLevel": 3, "manualLevel": 2},
-            {"context": "COMFORT", "automaticLevel": 1, "manualLevel": 1},
+            {"context": "SECURITY", "automaticLevel": "HIGH", "manualLevel": "MIDDLE"},
+            {"context": "COMFORT", "automaticLevel": "LOW", "manualLevel": "LOW"},
         ]
 
     def test_enabled_true(self):
@@ -571,7 +572,7 @@ class TestSmartSensitivityControlService:
         )
         assert result is not None
         assert result["context"] == "SECURITY"
-        assert result["manualLevel"] == 2
+        assert result["manualLevel"] == "MIDDLE"  # MotionSensitivity enum string
 
     def test_get_sensitivity_comfort(self):
         from boschshcpy.services_impl import SmartSensitivityControlService
@@ -628,21 +629,22 @@ class TestSmartSensitivityControlService:
         svc = self._svc(enabled=True, sensitivities=sens)
         svc.put_state = MagicMock()
         svc.set_manual_level(
-            SmartSensitivityControlService.SmartSensitivityContext.SECURITY, 5
+            SmartSensitivityControlService.SmartSensitivityContext.SECURITY,
+            SmartSensitivityControlService.MotionSensitivity.HIGH,
         )
         call_args = svc.put_state.call_args[0][0]
         # enabled passes through
         assert call_args["enabled"] is True
-        # SECURITY entry updated
+        # SECURITY entry updated to HIGH
         security_entry = next(
             e for e in call_args["sensitivities"] if e["context"] == "SECURITY"
         )
-        assert security_entry["manualLevel"] == 5
-        # COMFORT entry unchanged
+        assert security_entry["manualLevel"] == "HIGH"
+        # COMFORT entry unchanged (LOW)
         comfort_entry = next(
             e for e in call_args["sensitivities"] if e["context"] == "COMFORT"
         )
-        assert comfort_entry["manualLevel"] == 1
+        assert comfort_entry["manualLevel"] == "LOW"
 
     def test_async_set_manual_level(self):
         from unittest.mock import AsyncMock
@@ -651,13 +653,14 @@ class TestSmartSensitivityControlService:
         svc = self._svc(enabled=True, sensitivities=sens)
         svc.async_put_state = AsyncMock()
         asyncio.run(svc.async_set_manual_level(
-            SmartSensitivityControlService.SmartSensitivityContext.COMFORT, 3
+            SmartSensitivityControlService.SmartSensitivityContext.COMFORT,
+            SmartSensitivityControlService.MotionSensitivity.MIDDLE,
         ))
         call_args = svc.async_put_state.call_args[0][0]
         comfort_entry = next(
             e for e in call_args["sensitivities"] if e["context"] == "COMFORT"
         )
-        assert comfort_entry["manualLevel"] == 3
+        assert comfort_entry["manualLevel"] == "MIDDLE"
 
     def test_context_enum_values(self):
         from boschshcpy.services_impl import SmartSensitivityControlService
@@ -981,8 +984,8 @@ class TestSHCMotionDetector2Bindings:
 
     def test_walk_state_request_passthrough(self):
         from boschshcpy.services_impl import WalkTestService
-        obj = self._make_md2(walktest_state={"walkStateRequest": "STOP"})
-        assert obj.walk_state_request == WalkTestService.WalkStateRequest.STOP
+        obj = self._make_md2(walktest_state={"walkStateRequest": "WALK_STATE_STOP"})
+        assert obj.walk_state_request == WalkTestService.WalkStateRequest.WALK_STATE_STOP
 
     def test_pet_immunity_walk_state_passthrough(self):
         from boschshcpy.services_impl import WalkTestService
@@ -1448,22 +1451,28 @@ class TestSHCMotionDetector2AsyncManualLevel:
     def test_async_set_smart_sensitivity_manual_level(self):
         from unittest.mock import AsyncMock
         from boschshcpy.services_impl import SmartSensitivityControlService
-        sens = [{"context": "SECURITY", "automaticLevel": 3, "manualLevel": 2}]
+        # APK: manualLevel is MotionSensitivity enum string, not int
+        sens = [{"context": "SECURITY", "automaticLevel": "HIGH", "manualLevel": "MIDDLE"}]
         obj, ssc = self._make_md2({"enabled": True, "sensitivities": sens})
         ssc.async_put_state = AsyncMock()
         asyncio.run(obj.async_set_smart_sensitivity_manual_level(
-            SmartSensitivityControlService.SmartSensitivityContext.SECURITY, 5
+            SmartSensitivityControlService.SmartSensitivityContext.SECURITY,
+            SmartSensitivityControlService.MotionSensitivity.HIGH,
         ))
         call_args = ssc.async_put_state.call_args[0][0]
         security = next(e for e in call_args["sensitivities"] if e["context"] == "SECURITY")
-        assert security["manualLevel"] == 5
+        assert security["manualLevel"] == "HIGH"
 
     def test_async_set_smart_sensitivity_manual_level_absent_service_no_error(self):
         from boschshcpy.models_impl import SHCMotionDetector2
+        from boschshcpy.services_impl import SmartSensitivityControlService
         obj = SHCMotionDetector2.__new__(SHCMotionDetector2)
         obj._smart_sensitivity_control_service = None
-        # Should not raise
-        asyncio.run(obj.async_set_smart_sensitivity_manual_level("anything", 5))
+        # Should not raise even when service is absent
+        asyncio.run(obj.async_set_smart_sensitivity_manual_level(
+            SmartSensitivityControlService.SmartSensitivityContext.SECURITY,
+            SmartSensitivityControlService.MotionSensitivity.LOW,
+        ))
 
 
 # ---------------------------------------------------------------------------

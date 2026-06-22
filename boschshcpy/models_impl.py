@@ -285,6 +285,11 @@ class SHCSmokeDetector(SHCBatteryDevice):
             return None
         return self._smoke_sensitivity_service.smoke_sensitivity
 
+    @smoke_sensitivity.setter
+    def smoke_sensitivity(self, value: "SmokeSensitivityService.SmokeSensitivityLevel"):
+        if self._smoke_sensitivity_service is not None:
+            self._smoke_sensitivity_service.smoke_sensitivity = value
+
     async def async_set_smoke_sensitivity(
         self, value: "SmokeSensitivityService.SmokeSensitivityLevel"
     ):
@@ -297,6 +302,11 @@ class SHCSmokeDetector(SHCBatteryDevice):
         if self._smoke_sensitivity_service is None:
             return False
         return self._smoke_sensitivity_service.pre_alarm_enabled
+
+    @pre_alarm_enabled.setter
+    def pre_alarm_enabled(self, value: bool):
+        if self._smoke_sensitivity_service is not None:
+            self._smoke_sensitivity_service.pre_alarm_enabled = value
 
     async def async_set_pre_alarm_enabled(self, value: bool):
         """Async write: enable/disable pre-alarm (if service present)."""
@@ -348,6 +358,11 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
             return False
         return self._energy_saving_mode_service.energy_saving_mode_enabled
 
+    @energy_saving_mode_enabled.setter
+    def energy_saving_mode_enabled(self, value: bool):
+        if self._energy_saving_mode_service is not None:
+            self._energy_saving_mode_service.energy_saving_mode_enabled = value
+
     async def async_set_energy_saving_mode_enabled(self, value: bool):
         """Async write: enable/disable energy saving mode."""
         if self._energy_saving_mode_service is not None:
@@ -358,6 +373,11 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
         if self._energy_saving_mode_service is None:
             return None
         return self._energy_saving_mode_service.power_threshold
+
+    @power_threshold.setter
+    def power_threshold(self, value):
+        if self._energy_saving_mode_service is not None:
+            self._energy_saving_mode_service.power_threshold = value
 
     async def async_set_power_threshold(self, value):
         """Async write: set power threshold for energy saving mode."""
@@ -370,6 +390,11 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
             return 0
         return self._energy_saving_mode_service.enter_duration_seconds
 
+    @enter_duration_seconds.setter
+    def enter_duration_seconds(self, value: int):
+        if self._energy_saving_mode_service is not None:
+            self._energy_saving_mode_service.enter_duration_seconds = value
+
     async def async_set_enter_duration_seconds(self, value: int):
         """Async write: set enter duration for energy saving mode."""
         if self._energy_saving_mode_service is not None:
@@ -381,6 +406,11 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
             return None
         return self._led_brightness_configuration_service.brightness
 
+    @led_brightness.setter
+    def led_brightness(self, value):
+        if self._led_brightness_configuration_service is not None:
+            self._led_brightness_configuration_service.brightness = value
+
     async def async_set_led_brightness(self, value):
         """Async write: set LED brightness."""
         if self._led_brightness_configuration_service is not None:
@@ -391,6 +421,13 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
         if self._power_switch_configuration_service is None:
             return None
         return self._power_switch_configuration_service.state_after_power_outage
+
+    @state_after_power_outage.setter
+    def state_after_power_outage(
+        self, value: "PowerSwitchConfigurationService.StateAfterPowerOutage"
+    ):
+        if self._power_switch_configuration_service is not None:
+            self._power_switch_configuration_service.state_after_power_outage = value
 
     async def async_set_state_after_power_outage(
         self, value: "PowerSwitchConfigurationService.StateAfterPowerOutage"
@@ -406,6 +443,11 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
         if self._power_switch_warning_service is None:
             return False
         return self._power_switch_warning_service.warning_suppressed
+
+    @warning_suppressed.setter
+    def warning_suppressed(self, value: bool):
+        if self._power_switch_warning_service is not None:
+            self._power_switch_warning_service.warning_suppressed = value
 
     async def async_set_warning_suppressed(self, value: bool):
         """Async write: suppress/enable 'still on' warning."""
@@ -440,6 +482,11 @@ class SHCSmartPlugCompact(
             return False
         return self._energy_saving_mode_service.energy_saving_mode_enabled
 
+    @energy_saving_mode_enabled.setter
+    def energy_saving_mode_enabled(self, value: bool):
+        if self._energy_saving_mode_service is not None:
+            self._energy_saving_mode_service.energy_saving_mode_enabled = value
+
     async def async_set_energy_saving_mode_enabled(self, value: bool):
         """Async write: enable/disable energy saving mode."""
         if self._energy_saving_mode_service is not None:
@@ -450,6 +497,11 @@ class SHCSmartPlugCompact(
         if self._energy_saving_mode_service is None:
             return None
         return self._energy_saving_mode_service.power_threshold
+
+    @power_threshold.setter
+    def power_threshold(self, value):
+        if self._energy_saving_mode_service is not None:
+            self._energy_saving_mode_service.power_threshold = value
 
     async def async_set_power_threshold(self, value):
         """Async write: set power threshold for energy saving mode."""
@@ -462,6 +514,11 @@ class SHCSmartPlugCompact(
             return 0
         return self._energy_saving_mode_service.enter_duration_seconds
 
+    @enter_duration_seconds.setter
+    def enter_duration_seconds(self, value: int):
+        if self._energy_saving_mode_service is not None:
+            self._energy_saving_mode_service.enter_duration_seconds = value
+
     async def async_set_enter_duration_seconds(self, value: int):
         """Async write: set enter duration for energy saving mode."""
         if self._energy_saving_mode_service is not None:
@@ -473,6 +530,11 @@ class SHCSmartPlugCompact(
             return None
         return self._led_brightness_configuration_service.brightness
 
+    @led_brightness.setter
+    def led_brightness(self, value):
+        if self._led_brightness_configuration_service is not None:
+            self._led_brightness_configuration_service.brightness = value
+
     async def async_set_led_brightness(self, value):
         """Async write: set LED brightness."""
         if self._led_brightness_configuration_service is not None:
@@ -483,6 +545,13 @@ class SHCSmartPlugCompact(
         if self._power_switch_configuration_service is None:
             return None
         return self._power_switch_configuration_service.state_after_power_outage
+
+    @state_after_power_outage.setter
+    def state_after_power_outage(
+        self, value: "PowerSwitchConfigurationService.StateAfterPowerOutage"
+    ):
+        if self._power_switch_configuration_service is not None:
+            self._power_switch_configuration_service.state_after_power_outage = value
 
     async def async_set_state_after_power_outage(
         self, value: "PowerSwitchConfigurationService.StateAfterPowerOutage"
@@ -498,6 +567,11 @@ class SHCSmartPlugCompact(
         if self._power_switch_warning_service is None:
             return False
         return self._power_switch_warning_service.warning_suppressed
+
+    @warning_suppressed.setter
+    def warning_suppressed(self, value: bool):
+        if self._power_switch_warning_service is not None:
+            self._power_switch_warning_service.warning_suppressed = value
 
     async def async_set_warning_suppressed(self, value: bool):
         """Async write: suppress/enable 'still on' warning."""
@@ -526,6 +600,11 @@ class SHCLightControl(_CommunicationQuality, _PowerMeter):
             return None
         return self._switch_config_service.switch_type
 
+    @switch_type.setter
+    def switch_type(self, value: "SwitchConfiguration.SwitchType"):
+        if self._switch_config_service is not None:
+            self._switch_config_service.switch_type = value
+
     async def async_set_switch_type(self, value: "SwitchConfiguration.SwitchType"):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_switchType(value)
@@ -535,6 +614,11 @@ class SHCLightControl(_CommunicationQuality, _PowerMeter):
         if self._switch_config_service is None:
             return False
         return self._switch_config_service.swap_inputs
+
+    @swap_inputs.setter
+    def swap_inputs(self, value: bool):
+        if self._switch_config_service is not None:
+            self._switch_config_service.swap_inputs = value
 
     async def async_set_swap_inputs(self, value: bool):
         if self._switch_config_service is not None:
@@ -546,6 +630,11 @@ class SHCLightControl(_CommunicationQuality, _PowerMeter):
             return False
         return self._switch_config_service.swap_outputs
 
+    @swap_outputs.setter
+    def swap_outputs(self, value: bool):
+        if self._switch_config_service is not None:
+            self._switch_config_service.swap_outputs = value
+
     async def async_set_swap_outputs(self, value: bool):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_swapOutputs(value)
@@ -556,6 +645,11 @@ class SHCLightControl(_CommunicationQuality, _PowerMeter):
             return None
         return self._switch_config_service.actuator_type
 
+    @actuator_type.setter
+    def actuator_type(self, value: "SwitchConfiguration.ActuatorType"):
+        if self._switch_config_service is not None:
+            self._switch_config_service.actuator_type = value
+
     async def async_set_actuator_type(self, value: "SwitchConfiguration.ActuatorType"):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_actuatorType(value)
@@ -565,6 +659,11 @@ class SHCLightControl(_CommunicationQuality, _PowerMeter):
         if self._switch_config_service is None:
             return None
         return self._switch_config_service.output_mode
+
+    @output_mode.setter
+    def output_mode(self, value: "SwitchConfiguration.OutputMode"):
+        if self._switch_config_service is not None:
+            self._switch_config_service.output_mode = value
 
     async def async_set_output_mode(self, value: "SwitchConfiguration.OutputMode"):
         if self._switch_config_service is not None:
@@ -636,6 +735,11 @@ class SHCMicromoduleRelay(
             return None
         return self._switch_config_service.switch_type
 
+    @switch_type.setter
+    def switch_type(self, value: "SwitchConfiguration.SwitchType"):
+        if self._switch_config_service is not None:
+            self._switch_config_service.switch_type = value
+
     async def async_set_switch_type(self, value: "SwitchConfiguration.SwitchType"):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_switchType(value)
@@ -645,6 +749,11 @@ class SHCMicromoduleRelay(
         if self._switch_config_service is None:
             return False
         return self._switch_config_service.swap_inputs
+
+    @swap_inputs.setter
+    def swap_inputs(self, value: bool):
+        if self._switch_config_service is not None:
+            self._switch_config_service.swap_inputs = value
 
     async def async_set_swap_inputs(self, value: bool):
         if self._switch_config_service is not None:
@@ -656,6 +765,11 @@ class SHCMicromoduleRelay(
             return False
         return self._switch_config_service.swap_outputs
 
+    @swap_outputs.setter
+    def swap_outputs(self, value: bool):
+        if self._switch_config_service is not None:
+            self._switch_config_service.swap_outputs = value
+
     async def async_set_swap_outputs(self, value: bool):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_swapOutputs(value)
@@ -666,6 +780,11 @@ class SHCMicromoduleRelay(
             return None
         return self._switch_config_service.actuator_type
 
+    @actuator_type.setter
+    def actuator_type(self, value: "SwitchConfiguration.ActuatorType"):
+        if self._switch_config_service is not None:
+            self._switch_config_service.actuator_type = value
+
     async def async_set_actuator_type(self, value: "SwitchConfiguration.ActuatorType"):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_actuatorType(value)
@@ -675,6 +794,11 @@ class SHCMicromoduleRelay(
         if self._switch_config_service is None:
             return None
         return self._switch_config_service.output_mode
+
+    @output_mode.setter
+    def output_mode(self, value: "SwitchConfiguration.OutputMode"):
+        if self._switch_config_service is not None:
+            self._switch_config_service.output_mode = value
 
     async def async_set_output_mode(self, value: "SwitchConfiguration.OutputMode"):
         if self._switch_config_service is not None:
@@ -1256,6 +1380,11 @@ class SHCThermostatGen2(SHCThermostat):
             return None
         return self._display_config_service.display_brightness
 
+    @display_brightness.setter
+    def display_brightness(self, value):
+        if self._display_config_service is not None:
+            self._display_config_service.display_brightness = value
+
     async def async_set_display_brightness(self, value):
         if self._display_config_service is not None:
             await self._display_config_service.async_set_displayBrightness(value)
@@ -1265,6 +1394,11 @@ class SHCThermostatGen2(SHCThermostat):
         if self._display_config_service is None:
             return None
         return self._display_config_service.display_on_time
+
+    @display_on_time.setter
+    def display_on_time(self, value):
+        if self._display_config_service is not None:
+            self._display_config_service.display_on_time = value
 
     async def async_set_display_on_time(self, value):
         if self._display_config_service is not None:
@@ -1276,6 +1410,11 @@ class SHCThermostatGen2(SHCThermostat):
             return False
         return self._display_config_service.humidity_warning_enabled
 
+    @humidity_warning_enabled.setter
+    def humidity_warning_enabled(self, value: bool):
+        if self._display_config_service is not None:
+            self._display_config_service.humidity_warning_enabled = value
+
     async def async_set_humidity_warning_enabled(self, value: bool):
         if self._display_config_service is not None:
             await self._display_config_service.async_set_humidityWarningEnabled(value)
@@ -1286,6 +1425,11 @@ class SHCThermostatGen2(SHCThermostat):
             return None
         return self._display_direction_service.direction
 
+    @display_direction.setter
+    def display_direction(self, value: "DisplayDirection.Direction"):
+        if self._display_direction_service is not None:
+            self._display_direction_service.direction = value
+
     async def async_set_display_direction(self, value: "DisplayDirection.Direction"):
         if self._display_direction_service is not None:
             await self._display_direction_service.async_set_direction(value)
@@ -1295,6 +1439,13 @@ class SHCThermostatGen2(SHCThermostat):
         if self._displayed_temp_service is None:
             return None
         return self._displayed_temp_service.displayed_temperature
+
+    @displayed_temperature.setter
+    def displayed_temperature(
+        self, value: "DisplayedTemperatureConfiguration.DisplayedTemperature"
+    ):
+        if self._displayed_temp_service is not None:
+            self._displayed_temp_service.displayed_temperature = value
 
     async def async_set_displayed_temperature(
         self, value: "DisplayedTemperatureConfiguration.DisplayedTemperature"
@@ -1308,6 +1459,11 @@ class SHCThermostatGen2(SHCThermostat):
             return None
         return self._wall_thermostat_config_service.valve_type
 
+    @valve_type.setter
+    def valve_type(self, value: "WallThermostatConfiguration.ValveType"):
+        if self._wall_thermostat_config_service is not None:
+            self._wall_thermostat_config_service.valve_type = value
+
     async def async_set_valve_type(
         self, value: "WallThermostatConfiguration.ValveType"
     ):
@@ -1319,6 +1475,11 @@ class SHCThermostatGen2(SHCThermostat):
         if self._wall_thermostat_config_service is None:
             return None
         return self._wall_thermostat_config_service.heater_type
+
+    @heater_type.setter
+    def heater_type(self, value: "WallThermostatConfiguration.HeaterType"):
+        if self._wall_thermostat_config_service is not None:
+            self._wall_thermostat_config_service.heater_type = value
 
     async def async_set_heater_type(
         self, value: "WallThermostatConfiguration.HeaterType"
@@ -1355,6 +1516,11 @@ class SHCRoomThermostat2(
             return None
         return self._display_config_service.display_brightness
 
+    @display_brightness.setter
+    def display_brightness(self, value):
+        if self._display_config_service is not None:
+            self._display_config_service.display_brightness = value
+
     async def async_set_display_brightness(self, value):
         if self._display_config_service is not None:
             await self._display_config_service.async_set_displayBrightness(value)
@@ -1364,6 +1530,11 @@ class SHCRoomThermostat2(
         if self._display_config_service is None:
             return None
         return self._display_config_service.display_on_time
+
+    @display_on_time.setter
+    def display_on_time(self, value):
+        if self._display_config_service is not None:
+            self._display_config_service.display_on_time = value
 
     async def async_set_display_on_time(self, value):
         if self._display_config_service is not None:
@@ -1375,6 +1546,11 @@ class SHCRoomThermostat2(
             return False
         return self._display_config_service.humidity_warning_enabled
 
+    @humidity_warning_enabled.setter
+    def humidity_warning_enabled(self, value: bool):
+        if self._display_config_service is not None:
+            self._display_config_service.humidity_warning_enabled = value
+
     async def async_set_humidity_warning_enabled(self, value: bool):
         if self._display_config_service is not None:
             await self._display_config_service.async_set_humidityWarningEnabled(value)
@@ -1385,6 +1561,11 @@ class SHCRoomThermostat2(
             return None
         return self._display_direction_service.direction
 
+    @display_direction.setter
+    def display_direction(self, value: "DisplayDirection.Direction"):
+        if self._display_direction_service is not None:
+            self._display_direction_service.direction = value
+
     async def async_set_display_direction(self, value: "DisplayDirection.Direction"):
         if self._display_direction_service is not None:
             await self._display_direction_service.async_set_direction(value)
@@ -1394,6 +1575,13 @@ class SHCRoomThermostat2(
         if self._displayed_temp_service is None:
             return None
         return self._displayed_temp_service.displayed_temperature
+
+    @displayed_temperature.setter
+    def displayed_temperature(
+        self, value: "DisplayedTemperatureConfiguration.DisplayedTemperature"
+    ):
+        if self._displayed_temp_service is not None:
+            self._displayed_temp_service.displayed_temperature = value
 
     async def async_set_displayed_temperature(
         self, value: "DisplayedTemperatureConfiguration.DisplayedTemperature"
@@ -1406,6 +1594,11 @@ class SHCRoomThermostat2(
         if self._terminal_config_service is None:
             return None
         return self._terminal_config_service.type
+
+    @terminal_type.setter
+    def terminal_type(self, value: "TerminalConfiguration.Type"):
+        if self._terminal_config_service is not None:
+            self._terminal_config_service.type = value
 
     async def async_set_terminal_type(self, value: "TerminalConfiguration.Type"):
         if self._terminal_config_service is not None:
@@ -1636,11 +1829,21 @@ class SHCMotionDetector2(SHCBatteryDevice):
             return None
         return self._walktest_service.walk_state_request
 
+    @walk_state_request.setter
+    def walk_state_request(self, value: "WalkTestService.WalkStateRequest"):
+        if self._walktest_service is not None:
+            self._walktest_service.walk_state_request = value
+
     @property
     def pet_immunity_walk_state(self):
         if self._walktest_service is None:
             return None
         return self._walktest_service.pet_immunity_state
+
+    def set_walk_state_request(self, value: "WalkTestService.WalkStateRequest"):
+        """Sync write: start or stop the walk test."""
+        if self._walktest_service is not None:
+            self._walktest_service.set_walk_state_request(value)
 
     async def async_set_walk_state_request(
         self, value: "WalkTestService.WalkStateRequest"
@@ -1655,6 +1858,11 @@ class SHCMotionDetector2(SHCBatteryDevice):
             return False
         return self._smart_sensitivity_control_service.enabled
 
+    @smart_sensitivity_enabled.setter
+    def smart_sensitivity_enabled(self, value: bool):
+        if self._smart_sensitivity_control_service is not None:
+            self._smart_sensitivity_control_service.enabled = value
+
     async def async_set_smart_sensitivity_enabled(self, value: bool):
         """Async write: enable/disable smart sensitivity control."""
         if self._smart_sensitivity_control_service is not None:
@@ -1666,7 +1874,20 @@ class SHCMotionDetector2(SHCBatteryDevice):
             return None
         return self._smart_sensitivity_control_service.get_sensitivity(context)
 
-    async def async_set_smart_sensitivity_manual_level(self, context, level: int):
+    def set_smart_sensitivity_manual_level(
+        self,
+        context: "SmartSensitivityControlService.SmartSensitivityContext",
+        level: "SmartSensitivityControlService.MotionSensitivity",
+    ):
+        """Sync write: set manual sensitivity level for a context."""
+        if self._smart_sensitivity_control_service is not None:
+            self._smart_sensitivity_control_service.set_manual_level(context, level)
+
+    async def async_set_smart_sensitivity_manual_level(
+        self,
+        context: "SmartSensitivityControlService.SmartSensitivityContext",
+        level: "SmartSensitivityControlService.MotionSensitivity",
+    ):
         """Async write: set manual sensitivity level for a context."""
         if self._smart_sensitivity_control_service is not None:
             await self._smart_sensitivity_control_service.async_set_manual_level(
@@ -1738,6 +1959,11 @@ class SHCTwinguard(SHCBatteryDevice):
             return None
         return self._smoke_sensitivity_service.smoke_sensitivity
 
+    @smoke_sensitivity.setter
+    def smoke_sensitivity(self, value: "SmokeSensitivityService.SmokeSensitivityLevel"):
+        if self._smoke_sensitivity_service is not None:
+            self._smoke_sensitivity_service.smoke_sensitivity = value
+
     async def async_set_smoke_sensitivity(
         self, value: "SmokeSensitivityService.SmokeSensitivityLevel"
     ):
@@ -1751,6 +1977,11 @@ class SHCTwinguard(SHCBatteryDevice):
             return False
         return self._smoke_sensitivity_service.pre_alarm_enabled
 
+    @pre_alarm_enabled.setter
+    def pre_alarm_enabled(self, value: bool):
+        if self._smoke_sensitivity_service is not None:
+            self._smoke_sensitivity_service.pre_alarm_enabled = value
+
     async def async_set_pre_alarm_enabled(self, value: bool):
         """Async write: enable/disable pre-alarm."""
         if self._smoke_sensitivity_service is not None:
@@ -1761,6 +1992,11 @@ class SHCTwinguard(SHCBatteryDevice):
         if self._twinguard_nightly_promise_service is None:
             return False
         return self._twinguard_nightly_promise_service.nightly_promise_enabled
+
+    @nightly_promise_enabled.setter
+    def nightly_promise_enabled(self, value: bool):
+        if self._twinguard_nightly_promise_service is not None:
+            self._twinguard_nightly_promise_service.nightly_promise_enabled = value
 
     async def async_set_nightly_promise_enabled(self, value: bool):
         """Async write: enable/disable nightly promise self-check."""
