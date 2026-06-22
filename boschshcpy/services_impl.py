@@ -664,7 +664,7 @@ class ImpulseSwitchService(SHCDeviceService):
 
     @property
     def instant_of_last_impulse(self) -> str:
-        if not "instantOfLastImpulse" in self.state:
+        if "instantOfLastImpulse" not in self.state:
             return None
         return self.state["instantOfLastImpulse"]
 
@@ -692,13 +692,13 @@ class KeypadService(SHCDeviceService):
 
     @property
     def keyName(self) -> KeyState:
-        if not "keyName" in self.state:
+        if "keyName" not in self.state:
             return None
         return self.KeyState(self.state["keyName"])
 
     @property
     def eventType(self) -> KeyEvent:
-        if not "eventType" in self.state:
+        if "eventType" not in self.state:
             return None
         return self.KeyEvent(self.state["eventType"])
 
@@ -708,7 +708,7 @@ class KeypadService(SHCDeviceService):
 
     @property
     def eventTimestamp(self) -> int:
-        if not "eventTimestamp" in self.state:
+        if "eventTimestamp" not in self.state:
             return 0
         return self.state["eventTimestamp"]
 
@@ -778,7 +778,7 @@ class PollControlService(SHCDeviceService):
         LONG = "LONG"
         SHORT = "SHORT"
         UNKNOWN = "UNKNOWN"
-    
+
     @property
     def longPollInterval(self) -> PollControlState:
         return self.PollControlState(self.state["longPollInterval"])
@@ -794,7 +794,7 @@ class PirSensorConfigurationService(SHCDeviceService):
         MIDDLE = "MIDDLE"
         LOW = "LOW"
         UNKNOWN = "UNKNOWN"
-   
+
     @property
     def motionSensitivity(self) -> MotionSensitivity:
         return self.MotionSensitivity(self.state["motionSensitivity"])
@@ -840,7 +840,7 @@ class PetImmunityService(SHCDeviceService):
 class SmartSensitivityControlService(SHCDeviceService):
     def summary(self):
         super().summary()
-        print(f"    not yet implemented!")
+        print("    not yet implemented!")
 
 
 class AirQualityLevelService(SHCDeviceService):
@@ -915,7 +915,7 @@ class SurveillanceAlarmService(SHCDeviceService):
 class SmokeDetectionControlService(SHCDeviceService):
     def summary(self):
         super().summary()
-        print(f"    not yet implemented!")
+        print("    not yet implemented!")
 
 
 class BatteryLevelService(SHCDeviceService):

@@ -120,15 +120,15 @@ class SHCIntrusionSystem:
         print(f"    Alarm State:           {self.alarm_state}")
 
     def arm(self):
-        result = self._api.post_domain_action("intrusion/actions/arm")
+        self._api.post_domain_action("intrusion/actions/arm")
 
     def arm_full_protection(self):
         data = {"@type": "armRequest", "profileId": "0"}
-        result = self._api.post_domain_action("intrusion/actions/arm", data)
+        self._api.post_domain_action("intrusion/actions/arm", data)
 
     def arm_partial_protection(self):
         data = {"@type": "armRequest", "profileId": "1"}
-        result = self._api.post_domain_action("intrusion/actions/arm", data)
+        self._api.post_domain_action("intrusion/actions/arm", data)
 
     def arm_individual_protection(self):
         data = {"@type": "armRequest", "profileId": "2"}
