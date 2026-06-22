@@ -48,3 +48,5 @@ from .session import SHCSession
 from .userdefinedstate import SHCUserDefinedState
 from .message import SHCMessage
 from .emma import SHCEmma
+from .api_async import SHCAPIAsync, build_ssl_context  # noqa: F401
+from .session_async import SHCSessionAsync  # noqa: F401
