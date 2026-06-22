@@ -50,6 +50,16 @@ from .message import SHCMessage
 from .emma import SHCEmma
 from .api_async import SHCAPIAsync, build_ssl_context  # noqa: F401
 from .session_async import SHCSessionAsync  # noqa: F401
+from .services_impl import (  # noqa: F401
+    EnergySavingModeService,
+    LedBrightnessConfigurationService,
+    PowerSwitchConfigurationService,
+    PowerSwitchWarningService,
+    WalkTestService,
+    SmartSensitivityControlService,
+    SmokeSensitivityService,
+    TwinguardNightlyPromiseService,
+)
 
 __all__ = [
     "SHCDevice",
@@ -101,4 +111,12 @@ __all__ = [
     "SHCAPIAsync",
     "build_ssl_context",
     "SHCSessionAsync",
+    "EnergySavingModeService",
+    "LedBrightnessConfigurationService",
+    "PowerSwitchConfigurationService",
+    "PowerSwitchWarningService",
+    "WalkTestService",
+    "SmartSensitivityControlService",
+    "SmokeSensitivityService",
+    "TwinguardNightlyPromiseService",
 ]

@@ -239,13 +239,14 @@ class _SilentMode(SHCDevice):
 
 
 class SHCSmokeDetector(SHCBatteryDevice):
-    from .services_impl import AlarmService, SmokeDetectorCheckService
+    from .services_impl import AlarmService, SmokeSensitivityService, SmokeDetectorCheckService
 
     def __init__(self, api, raw_device, raw_device_services):
         super().__init__(api, raw_device, raw_device_services)
 
         self._alarm_service = self.device_service("Alarm")
         self._smokedetectorcheck_service = self.device_service("SmokeDetectorCheck")
+        self._smoke_sensitivity_service = self.device_service("SmokeSensitivity")
 
     @property
     def alarmstate(self) -> AlarmService.State:
@@ -274,9 +275,41 @@ class SHCSmokeDetector(SHCBatteryDevice):
             "value", "SMOKE_TEST_REQUESTED"
         )
 
+    @property
+    def has_smoke_sensitivity_service(self) -> bool:
+        return self._smoke_sensitivity_service is not None
+
+    @property
+    def smoke_sensitivity(self):
+        if self._smoke_sensitivity_service is None:
+            return None
+        return self._smoke_sensitivity_service.smoke_sensitivity
+
+    async def async_set_smoke_sensitivity(
+        self, value: "SmokeSensitivityService.SmokeSensitivityLevel"
+    ):
+        """Async write: set smoke sensitivity level (if service present)."""
+        if self._smoke_sensitivity_service is not None:
+            await self._smoke_sensitivity_service.async_set_smoke_sensitivity(value)
+
+    @property
+    def pre_alarm_enabled(self) -> bool:
+        if self._smoke_sensitivity_service is None:
+            return False
+        return self._smoke_sensitivity_service.pre_alarm_enabled
+
+    async def async_set_pre_alarm_enabled(self, value: bool):
+        """Async write: enable/disable pre-alarm (if service present)."""
+        if self._smoke_sensitivity_service is not None:
+            await self._smoke_sensitivity_service.async_set_pre_alarm_enabled(value)
+
 
 class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
     from .services_impl import (
+        EnergySavingModeService,
+        LedBrightnessConfigurationService,
+        PowerSwitchConfigurationService,
+        PowerSwitchWarningService,
         RoutingService,
     )
 
@@ -284,6 +317,14 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
         super().__init__(api, raw_device, raw_device_services)
 
         self._routing_service = self.device_service("Routing")
+        self._energy_saving_mode_service = self.device_service("EnergySavingMode")
+        self._led_brightness_configuration_service = self.device_service(
+            "LedBrightnessConfiguration"
+        )
+        self._power_switch_configuration_service = self.device_service(
+            "PowerSwitchConfiguration"
+        )
+        self._power_switch_warning_service = self.device_service("PowerSwitchWarning")
 
     @property
     def routing(self) -> RoutingService.State:
@@ -301,11 +342,167 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
             "value", "ENABLED" if state else "DISABLED"
         )
 
+    @property
+    def energy_saving_mode_enabled(self) -> bool:
+        if self._energy_saving_mode_service is None:
+            return False
+        return self._energy_saving_mode_service.energy_saving_mode_enabled
+
+    async def async_set_energy_saving_mode_enabled(self, value: bool):
+        """Async write: enable/disable energy saving mode."""
+        if self._energy_saving_mode_service is not None:
+            await self._energy_saving_mode_service.async_set_energy_saving_mode_enabled(value)
+
+    @property
+    def power_threshold(self):
+        if self._energy_saving_mode_service is None:
+            return None
+        return self._energy_saving_mode_service.power_threshold
+
+    async def async_set_power_threshold(self, value):
+        """Async write: set power threshold for energy saving mode."""
+        if self._energy_saving_mode_service is not None:
+            await self._energy_saving_mode_service.async_set_power_threshold(value)
+
+    @property
+    def enter_duration_seconds(self) -> int:
+        if self._energy_saving_mode_service is None:
+            return 0
+        return self._energy_saving_mode_service.enter_duration_seconds
+
+    async def async_set_enter_duration_seconds(self, value: int):
+        """Async write: set enter duration for energy saving mode."""
+        if self._energy_saving_mode_service is not None:
+            await self._energy_saving_mode_service.async_set_enter_duration_seconds(value)
+
+    @property
+    def led_brightness(self):
+        if self._led_brightness_configuration_service is None:
+            return None
+        return self._led_brightness_configuration_service.brightness
+
+    async def async_set_led_brightness(self, value):
+        """Async write: set LED brightness."""
+        if self._led_brightness_configuration_service is not None:
+            await self._led_brightness_configuration_service.async_set_brightness(value)
+
+    @property
+    def state_after_power_outage(self):
+        if self._power_switch_configuration_service is None:
+            return None
+        return self._power_switch_configuration_service.state_after_power_outage
+
+    async def async_set_state_after_power_outage(
+        self, value: "PowerSwitchConfigurationService.StateAfterPowerOutage"
+    ):
+        """Async write: set state after power outage behavior."""
+        if self._power_switch_configuration_service is not None:
+            await self._power_switch_configuration_service.async_set_state_after_power_outage(
+                value
+            )
+
+    @property
+    def warning_suppressed(self) -> bool:
+        if self._power_switch_warning_service is None:
+            return False
+        return self._power_switch_warning_service.warning_suppressed
+
+    async def async_set_warning_suppressed(self, value: bool):
+        """Async write: suppress/enable 'still on' warning."""
+        if self._power_switch_warning_service is not None:
+            await self._power_switch_warning_service.async_set_warning_suppressed(value)
+
 
 class SHCSmartPlugCompact(
     _CommunicationQuality, _PowerMeter, _PowerSwitch, _PowerSwitchProgram
 ):
-    pass
+    from .services_impl import (
+        EnergySavingModeService,
+        LedBrightnessConfigurationService,
+        PowerSwitchConfigurationService,
+        PowerSwitchWarningService,
+    )
+
+    def __init__(self, api, raw_device, raw_device_services):
+        super().__init__(api, raw_device, raw_device_services)
+        self._energy_saving_mode_service = self.device_service("EnergySavingMode")
+        self._led_brightness_configuration_service = self.device_service(
+            "LedBrightnessConfiguration"
+        )
+        self._power_switch_configuration_service = self.device_service(
+            "PowerSwitchConfiguration"
+        )
+        self._power_switch_warning_service = self.device_service("PowerSwitchWarning")
+
+    @property
+    def energy_saving_mode_enabled(self) -> bool:
+        if self._energy_saving_mode_service is None:
+            return False
+        return self._energy_saving_mode_service.energy_saving_mode_enabled
+
+    async def async_set_energy_saving_mode_enabled(self, value: bool):
+        """Async write: enable/disable energy saving mode."""
+        if self._energy_saving_mode_service is not None:
+            await self._energy_saving_mode_service.async_set_energy_saving_mode_enabled(value)
+
+    @property
+    def power_threshold(self):
+        if self._energy_saving_mode_service is None:
+            return None
+        return self._energy_saving_mode_service.power_threshold
+
+    async def async_set_power_threshold(self, value):
+        """Async write: set power threshold for energy saving mode."""
+        if self._energy_saving_mode_service is not None:
+            await self._energy_saving_mode_service.async_set_power_threshold(value)
+
+    @property
+    def enter_duration_seconds(self) -> int:
+        if self._energy_saving_mode_service is None:
+            return 0
+        return self._energy_saving_mode_service.enter_duration_seconds
+
+    async def async_set_enter_duration_seconds(self, value: int):
+        """Async write: set enter duration for energy saving mode."""
+        if self._energy_saving_mode_service is not None:
+            await self._energy_saving_mode_service.async_set_enter_duration_seconds(value)
+
+    @property
+    def led_brightness(self):
+        if self._led_brightness_configuration_service is None:
+            return None
+        return self._led_brightness_configuration_service.brightness
+
+    async def async_set_led_brightness(self, value):
+        """Async write: set LED brightness."""
+        if self._led_brightness_configuration_service is not None:
+            await self._led_brightness_configuration_service.async_set_brightness(value)
+
+    @property
+    def state_after_power_outage(self):
+        if self._power_switch_configuration_service is None:
+            return None
+        return self._power_switch_configuration_service.state_after_power_outage
+
+    async def async_set_state_after_power_outage(
+        self, value: "PowerSwitchConfigurationService.StateAfterPowerOutage"
+    ):
+        """Async write: set state after power outage behavior."""
+        if self._power_switch_configuration_service is not None:
+            await self._power_switch_configuration_service.async_set_state_after_power_outage(
+                value
+            )
+
+    @property
+    def warning_suppressed(self) -> bool:
+        if self._power_switch_warning_service is None:
+            return False
+        return self._power_switch_warning_service.warning_suppressed
+
+    async def async_set_warning_suppressed(self, value: bool):
+        """Async write: suppress/enable 'still on' warning."""
+        if self._power_switch_warning_service is not None:
+            await self._power_switch_warning_service.async_set_warning_suppressed(value)
 
 
 class SHCLightSwitch(_ChildProtection, _PowerSwitch, _PowerSwitchProgram):
@@ -1016,6 +1213,8 @@ class SHCMotionDetector2(SHCBatteryDevice):
         OccupancyDetectionService,
         CommunicationQualityService,
         PetImmunityService,
+        WalkTestService,
+        SmartSensitivityControlService,
     )
 
     def __init__(self, api, raw_device, raw_device_services):
@@ -1032,6 +1231,8 @@ class SHCMotionDetector2(SHCBatteryDevice):
         self._occupancydetection_service = self.device_service("OccupancyDetection")
         self._communicationquality_service = self.device_service("CommunicationQuality")
         self._petimmunity_service = self.device_service("PetImmunity")
+        self._walktest_service = self.device_service("WalkTest")
+        self._smart_sensitivity_control_service = self.device_service("SmartSensitivityControl")
 
     @property
     def latestmotion(self) -> str:
@@ -1133,14 +1334,72 @@ class SHCMotionDetector2(SHCBatteryDevice):
     def tamper_protection_enabled(self) -> bool:
         return self._latesttamper_service.tamper_protection_enabled
 
+    @property
+    def walk_state(self):
+        if self._walktest_service is None:
+            return None
+        return self._walktest_service.walk_state
+
+    @property
+    def walk_state_request(self):
+        if self._walktest_service is None:
+            return None
+        return self._walktest_service.walk_state_request
+
+    @property
+    def pet_immunity_walk_state(self):
+        if self._walktest_service is None:
+            return None
+        return self._walktest_service.pet_immunity_state
+
+    async def async_set_walk_state_request(
+        self, value: "WalkTestService.WalkStateRequest"
+    ):
+        """Async write: start or stop the walk test."""
+        if self._walktest_service is not None:
+            await self._walktest_service.async_set_walk_state_request(value)
+
+    @property
+    def smart_sensitivity_enabled(self) -> bool:
+        if self._smart_sensitivity_control_service is None:
+            return False
+        return self._smart_sensitivity_control_service.enabled
+
+    async def async_set_smart_sensitivity_enabled(self, value: bool):
+        """Async write: enable/disable smart sensitivity control."""
+        if self._smart_sensitivity_control_service is not None:
+            await self._smart_sensitivity_control_service.async_set_enabled(value)
+
+    def get_smart_sensitivity(self, context):
+        """Return the sensitivity dict for the given context."""
+        if self._smart_sensitivity_control_service is None:
+            return None
+        return self._smart_sensitivity_control_service.get_sensitivity(context)
+
+    async def async_set_smart_sensitivity_manual_level(self, context, level: int):
+        """Async write: set manual sensitivity level for a context."""
+        if self._smart_sensitivity_control_service is not None:
+            await self._smart_sensitivity_control_service.async_set_manual_level(
+                context, level
+            )
+
 
 class SHCTwinguard(SHCBatteryDevice):
-    from .services_impl import AirQualityLevelService, SmokeDetectorCheckService
+    from .services_impl import (
+        AirQualityLevelService,
+        SmokeSensitivityService,
+        SmokeDetectorCheckService,
+        TwinguardNightlyPromiseService,
+    )
 
     def __init__(self, api, raw_device, raw_device_services):
         super().__init__(api, raw_device, raw_device_services)
         self._airqualitylevel_service = self.device_service("AirQualityLevel")
         self._smokedetectorcheck_service = self.device_service("SmokeDetectorCheck")
+        self._smoke_sensitivity_service = self.device_service("SmokeSensitivity")
+        self._twinguard_nightly_promise_service = self.device_service(
+            "TwinguardNightlyPromise"
+        )
 
     @property
     def description(self) -> str:
@@ -1182,6 +1441,43 @@ class SHCTwinguard(SHCBatteryDevice):
         self._smokedetectorcheck_service.put_state_element(
             "value", "SMOKE_TEST_REQUESTED"
         )
+
+    @property
+    def smoke_sensitivity(self):
+        if self._smoke_sensitivity_service is None:
+            return None
+        return self._smoke_sensitivity_service.smoke_sensitivity
+
+    async def async_set_smoke_sensitivity(
+        self, value: "SmokeSensitivityService.SmokeSensitivityLevel"
+    ):
+        """Async write: set smoke sensitivity level."""
+        if self._smoke_sensitivity_service is not None:
+            await self._smoke_sensitivity_service.async_set_smoke_sensitivity(value)
+
+    @property
+    def pre_alarm_enabled(self) -> bool:
+        if self._smoke_sensitivity_service is None:
+            return False
+        return self._smoke_sensitivity_service.pre_alarm_enabled
+
+    async def async_set_pre_alarm_enabled(self, value: bool):
+        """Async write: enable/disable pre-alarm."""
+        if self._smoke_sensitivity_service is not None:
+            await self._smoke_sensitivity_service.async_set_pre_alarm_enabled(value)
+
+    @property
+    def nightly_promise_enabled(self) -> bool:
+        if self._twinguard_nightly_promise_service is None:
+            return False
+        return self._twinguard_nightly_promise_service.nightly_promise_enabled
+
+    async def async_set_nightly_promise_enabled(self, value: bool):
+        """Async write: enable/disable nightly promise self-check."""
+        if self._twinguard_nightly_promise_service is not None:
+            await self._twinguard_nightly_promise_service.async_set_nightly_promise_enabled(
+                value
+            )
 
 
 class SHCSmokeDetectionSystem(SHCDevice):
