@@ -313,6 +313,10 @@ class SHCSmokeDetector(SHCBatteryDevice):
         if self._smoke_sensitivity_service is not None:
             await self._smoke_sensitivity_service.async_set_pre_alarm_enabled(value)
 
+    @property
+    def supports_smoke_sensitivity(self) -> bool:
+        return self._smoke_sensitivity_service is not None
+
 
 class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
     from .services_impl import (
@@ -454,6 +458,22 @@ class SHCSmartPlug(_PowerMeter, _PowerSwitch, _PowerSwitchProgram):
         if self._power_switch_warning_service is not None:
             await self._power_switch_warning_service.async_set_warning_suppressed(value)
 
+    @property
+    def supports_energy_saving_mode(self) -> bool:
+        return self._energy_saving_mode_service is not None
+
+    @property
+    def supports_led_brightness(self) -> bool:
+        return self._led_brightness_configuration_service is not None
+
+    @property
+    def supports_power_switch_configuration(self) -> bool:
+        return self._power_switch_configuration_service is not None
+
+    @property
+    def supports_power_switch_warning(self) -> bool:
+        return self._power_switch_warning_service is not None
+
 
 class SHCSmartPlugCompact(
     _CommunicationQuality, _PowerMeter, _PowerSwitch, _PowerSwitchProgram
@@ -577,6 +597,22 @@ class SHCSmartPlugCompact(
         """Async write: suppress/enable 'still on' warning."""
         if self._power_switch_warning_service is not None:
             await self._power_switch_warning_service.async_set_warning_suppressed(value)
+
+    @property
+    def supports_energy_saving_mode(self) -> bool:
+        return self._energy_saving_mode_service is not None
+
+    @property
+    def supports_led_brightness(self) -> bool:
+        return self._led_brightness_configuration_service is not None
+
+    @property
+    def supports_power_switch_configuration(self) -> bool:
+        return self._power_switch_configuration_service is not None
+
+    @property
+    def supports_power_switch_warning(self) -> bool:
+        return self._power_switch_warning_service is not None
 
 
 class SHCLightSwitch(_ChildProtection, _PowerSwitch, _PowerSwitchProgram):
@@ -803,6 +839,10 @@ class SHCMicromoduleRelay(
     async def async_set_output_mode(self, value: "SwitchConfiguration.OutputMode"):
         if self._switch_config_service is not None:
             await self._switch_config_service.async_set_outputMode(value)
+
+    @property
+    def supports_switch_configuration(self) -> bool:
+        return self._switch_config_service is not None
 
 
 class SHCShutterControl(SHCDevice):
@@ -1405,9 +1445,9 @@ class SHCThermostatGen2(SHCThermostat):
             await self._display_config_service.async_set_displayOnTime(value)
 
     @property
-    def humidity_warning_enabled(self) -> bool:
+    def humidity_warning_enabled(self):
         if self._display_config_service is None:
-            return False
+            return None
         return self._display_config_service.humidity_warning_enabled
 
     @humidity_warning_enabled.setter
@@ -1487,6 +1527,22 @@ class SHCThermostatGen2(SHCThermostat):
         if self._wall_thermostat_config_service is not None:
             await self._wall_thermostat_config_service.async_set_heaterType(value)
 
+    @property
+    def supports_display_configuration(self) -> bool:
+        return self._display_config_service is not None
+
+    @property
+    def supports_display_direction(self) -> bool:
+        return self._display_direction_service is not None
+
+    @property
+    def supports_displayed_temperature(self) -> bool:
+        return self._displayed_temp_service is not None
+
+    @property
+    def supports_wall_thermostat_configuration(self) -> bool:
+        return self._wall_thermostat_config_service is not None
+
 
 class SHCRoomThermostat2(
     SHCWallThermostat,
@@ -1541,9 +1597,9 @@ class SHCRoomThermostat2(
             await self._display_config_service.async_set_displayOnTime(value)
 
     @property
-    def humidity_warning_enabled(self) -> bool:
+    def humidity_warning_enabled(self):
         if self._display_config_service is None:
-            return False
+            return None
         return self._display_config_service.humidity_warning_enabled
 
     @humidity_warning_enabled.setter
@@ -1615,6 +1671,22 @@ class SHCRoomThermostat2(
         if self._terminal_config_service is None:
             return []
         return self._terminal_config_service.supported_types
+
+    @property
+    def supports_display_configuration(self) -> bool:
+        return self._display_config_service is not None
+
+    @property
+    def supports_display_direction(self) -> bool:
+        return self._display_direction_service is not None
+
+    @property
+    def supports_displayed_temperature(self) -> bool:
+        return self._displayed_temp_service is not None
+
+    @property
+    def supports_terminal_configuration(self) -> bool:
+        return self._terminal_config_service is not None
 
 
 class SHCUniversalSwitch(SHCBatteryDevice):
@@ -1894,6 +1966,14 @@ class SHCMotionDetector2(SHCBatteryDevice):
                 context, level
             )
 
+    @property
+    def supports_walk_test(self) -> bool:
+        return self._walktest_service is not None
+
+    @property
+    def supports_smart_sensitivity(self) -> bool:
+        return self._smart_sensitivity_control_service is not None
+
 
 class SHCTwinguard(SHCBatteryDevice):
     from .services_impl import (
@@ -1986,6 +2066,14 @@ class SHCTwinguard(SHCBatteryDevice):
         """Async write: enable/disable pre-alarm."""
         if self._smoke_sensitivity_service is not None:
             await self._smoke_sensitivity_service.async_set_pre_alarm_enabled(value)
+
+    @property
+    def supports_smoke_sensitivity(self) -> bool:
+        return self._smoke_sensitivity_service is not None
+
+    @property
+    def supports_nightly_promise(self) -> bool:
+        return self._twinguard_nightly_promise_service is not None
 
     @property
     def nightly_promise_enabled(self) -> bool:

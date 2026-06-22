@@ -1460,8 +1460,9 @@ class DisplayConfiguration(SHCDeviceService):
         return self.state.get("displayOnTimeStepSize")
 
     @property
-    def humidity_warning_enabled(self) -> bool:
-        return bool(self.state.get("humidityWarningEnabled", False))
+    def humidity_warning_enabled(self):
+        v = self.state.get("humidityWarningEnabled")
+        return None if v is None else bool(v)
 
     @humidity_warning_enabled.setter
     def humidity_warning_enabled(self, value: bool):

@@ -123,9 +123,9 @@ class TestDisplayConfiguration:
         svc = self._svc(humidityWarningEnabled=False)
         assert svc.humidity_warning_enabled is False
 
-    def test_humidity_warning_enabled_missing_defaults_false(self):
+    def test_humidity_warning_enabled_missing_defaults_none(self):
         svc = self._svc()
-        assert svc.humidity_warning_enabled is False
+        assert svc.humidity_warning_enabled is None
 
     def test_sync_setter_display_brightness(self):
         from unittest.mock import MagicMock
@@ -694,7 +694,7 @@ class TestSHCThermostatGen2Bindings:
         obj._wall_thermostat_config_service = None
         assert obj.display_brightness is None
         assert obj.display_on_time is None
-        assert obj.humidity_warning_enabled is False
+        assert obj.humidity_warning_enabled is None
         assert obj.display_direction is None
         assert obj.displayed_temperature is None
         assert obj.valve_type is None
@@ -845,7 +845,7 @@ class TestSHCRoomThermostat2Bindings:
         obj._terminal_config_service = None
         assert obj.display_brightness is None
         assert obj.display_on_time is None
-        assert obj.humidity_warning_enabled is False
+        assert obj.humidity_warning_enabled is None
         assert obj.display_direction is None
         assert obj.displayed_temperature is None
         assert obj.terminal_type is None
