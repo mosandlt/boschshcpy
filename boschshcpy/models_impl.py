@@ -514,7 +514,61 @@ class SHCLightSwitchBSM(SHCLightSwitch, _PowerMeter):
 
 
 class SHCLightControl(_CommunicationQuality, _PowerMeter):
-    pass
+    from .services_impl import SwitchConfiguration
+
+    def __init__(self, api, raw_device, raw_device_services):
+        super().__init__(api, raw_device, raw_device_services)
+        self._switch_config_service = self.device_service("SwitchConfiguration")
+
+    @property
+    def switch_type(self):
+        if self._switch_config_service is None:
+            return None
+        return self._switch_config_service.switch_type
+
+    async def async_set_switch_type(self, value: "SwitchConfiguration.SwitchType"):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_switchType(value)
+
+    @property
+    def swap_inputs(self) -> bool:
+        if self._switch_config_service is None:
+            return False
+        return self._switch_config_service.swap_inputs
+
+    async def async_set_swap_inputs(self, value: bool):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_swapInputs(value)
+
+    @property
+    def swap_outputs(self) -> bool:
+        if self._switch_config_service is None:
+            return False
+        return self._switch_config_service.swap_outputs
+
+    async def async_set_swap_outputs(self, value: bool):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_swapOutputs(value)
+
+    @property
+    def actuator_type(self):
+        if self._switch_config_service is None:
+            return None
+        return self._switch_config_service.actuator_type
+
+    async def async_set_actuator_type(self, value: "SwitchConfiguration.ActuatorType"):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_actuatorType(value)
+
+    @property
+    def output_mode(self):
+        if self._switch_config_service is None:
+            return None
+        return self._switch_config_service.output_mode
+
+    async def async_set_output_mode(self, value: "SwitchConfiguration.OutputMode"):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_outputMode(value)
 
 
 class SHCMicromoduleRelay(
@@ -522,6 +576,7 @@ class SHCMicromoduleRelay(
 ):
     from .services_impl import (
         ImpulseSwitchService,
+        SwitchConfiguration,
     )
 
     class RelayType(Enum):
@@ -532,6 +587,7 @@ class SHCMicromoduleRelay(
         super().__init__(api, raw_device, raw_device_services)
 
         self._impulseswitch_service = self.device_service("ImpulseSwitch")
+        self._switch_config_service = self.device_service("SwitchConfiguration")
 
     @property
     def relay_type(self) -> RelayType:
@@ -573,6 +629,56 @@ class SHCMicromoduleRelay(
     def instant_of_last_impulse(self) -> str:
         if self._impulseswitch_service:
             return self._impulseswitch_service.instant_of_last_impulse
+
+    @property
+    def switch_type(self):
+        if self._switch_config_service is None:
+            return None
+        return self._switch_config_service.switch_type
+
+    async def async_set_switch_type(self, value: "SwitchConfiguration.SwitchType"):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_switchType(value)
+
+    @property
+    def swap_inputs(self) -> bool:
+        if self._switch_config_service is None:
+            return False
+        return self._switch_config_service.swap_inputs
+
+    async def async_set_swap_inputs(self, value: bool):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_swapInputs(value)
+
+    @property
+    def swap_outputs(self) -> bool:
+        if self._switch_config_service is None:
+            return False
+        return self._switch_config_service.swap_outputs
+
+    async def async_set_swap_outputs(self, value: bool):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_swapOutputs(value)
+
+    @property
+    def actuator_type(self):
+        if self._switch_config_service is None:
+            return None
+        return self._switch_config_service.actuator_type
+
+    async def async_set_actuator_type(self, value: "SwitchConfiguration.ActuatorType"):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_actuatorType(value)
+
+    @property
+    def output_mode(self):
+        if self._switch_config_service is None:
+            return None
+        return self._switch_config_service.output_mode
+
+    async def async_set_output_mode(self, value: "SwitchConfiguration.OutputMode"):
+        if self._switch_config_service is not None:
+            await self._switch_config_service.async_set_outputMode(value)
 
 
 class SHCShutterControl(SHCDevice):
@@ -1125,13 +1231,197 @@ class SHCWallThermostat(SHCBatteryDevice, _TemperatureLevel, _HumidityLevel, _Th
     pass
 
 
+class SHCThermostatGen2(SHCThermostat):
+    from .services_impl import (
+        DisplayConfiguration,
+        DisplayDirection,
+        DisplayedTemperatureConfiguration,
+        WallThermostatConfiguration,
+    )
+
+    def __init__(self, api, raw_device, raw_device_services):
+        super().__init__(api, raw_device, raw_device_services)
+        self._display_config_service = self.device_service("DisplayConfiguration")
+        self._display_direction_service = self.device_service("DisplayDirection")
+        self._displayed_temp_service = self.device_service(
+            "DisplayedTemperatureConfiguration"
+        )
+        self._wall_thermostat_config_service = self.device_service(
+            "WallThermostatConfiguration"
+        )
+
+    @property
+    def display_brightness(self):
+        if self._display_config_service is None:
+            return None
+        return self._display_config_service.display_brightness
+
+    async def async_set_display_brightness(self, value):
+        if self._display_config_service is not None:
+            await self._display_config_service.async_set_displayBrightness(value)
+
+    @property
+    def display_on_time(self):
+        if self._display_config_service is None:
+            return None
+        return self._display_config_service.display_on_time
+
+    async def async_set_display_on_time(self, value):
+        if self._display_config_service is not None:
+            await self._display_config_service.async_set_displayOnTime(value)
+
+    @property
+    def humidity_warning_enabled(self) -> bool:
+        if self._display_config_service is None:
+            return False
+        return self._display_config_service.humidity_warning_enabled
+
+    async def async_set_humidity_warning_enabled(self, value: bool):
+        if self._display_config_service is not None:
+            await self._display_config_service.async_set_humidityWarningEnabled(value)
+
+    @property
+    def display_direction(self):
+        if self._display_direction_service is None:
+            return None
+        return self._display_direction_service.direction
+
+    async def async_set_display_direction(self, value: "DisplayDirection.Direction"):
+        if self._display_direction_service is not None:
+            await self._display_direction_service.async_set_direction(value)
+
+    @property
+    def displayed_temperature(self):
+        if self._displayed_temp_service is None:
+            return None
+        return self._displayed_temp_service.displayed_temperature
+
+    async def async_set_displayed_temperature(
+        self, value: "DisplayedTemperatureConfiguration.DisplayedTemperature"
+    ):
+        if self._displayed_temp_service is not None:
+            await self._displayed_temp_service.async_set_displayedTemperature(value)
+
+    @property
+    def valve_type(self):
+        if self._wall_thermostat_config_service is None:
+            return None
+        return self._wall_thermostat_config_service.valve_type
+
+    async def async_set_valve_type(
+        self, value: "WallThermostatConfiguration.ValveType"
+    ):
+        if self._wall_thermostat_config_service is not None:
+            await self._wall_thermostat_config_service.async_set_valveType(value)
+
+    @property
+    def heater_type(self):
+        if self._wall_thermostat_config_service is None:
+            return None
+        return self._wall_thermostat_config_service.heater_type
+
+    async def async_set_heater_type(
+        self, value: "WallThermostatConfiguration.HeaterType"
+    ):
+        if self._wall_thermostat_config_service is not None:
+            await self._wall_thermostat_config_service.async_set_heaterType(value)
+
+
 class SHCRoomThermostat2(
     SHCWallThermostat,
     _CommunicationQuality,
     _Thermostat,
     _TemperatureOffset,
 ):
-    pass
+    from .services_impl import (
+        DisplayConfiguration,
+        DisplayDirection,
+        DisplayedTemperatureConfiguration,
+        TerminalConfiguration,
+    )
+
+    def __init__(self, api, raw_device, raw_device_services):
+        super().__init__(api, raw_device, raw_device_services)
+        self._display_config_service = self.device_service("DisplayConfiguration")
+        self._display_direction_service = self.device_service("DisplayDirection")
+        self._displayed_temp_service = self.device_service(
+            "DisplayedTemperatureConfiguration"
+        )
+        self._terminal_config_service = self.device_service("TerminalConfiguration")
+
+    @property
+    def display_brightness(self):
+        if self._display_config_service is None:
+            return None
+        return self._display_config_service.display_brightness
+
+    async def async_set_display_brightness(self, value):
+        if self._display_config_service is not None:
+            await self._display_config_service.async_set_displayBrightness(value)
+
+    @property
+    def display_on_time(self):
+        if self._display_config_service is None:
+            return None
+        return self._display_config_service.display_on_time
+
+    async def async_set_display_on_time(self, value):
+        if self._display_config_service is not None:
+            await self._display_config_service.async_set_displayOnTime(value)
+
+    @property
+    def humidity_warning_enabled(self) -> bool:
+        if self._display_config_service is None:
+            return False
+        return self._display_config_service.humidity_warning_enabled
+
+    async def async_set_humidity_warning_enabled(self, value: bool):
+        if self._display_config_service is not None:
+            await self._display_config_service.async_set_humidityWarningEnabled(value)
+
+    @property
+    def display_direction(self):
+        if self._display_direction_service is None:
+            return None
+        return self._display_direction_service.direction
+
+    async def async_set_display_direction(self, value: "DisplayDirection.Direction"):
+        if self._display_direction_service is not None:
+            await self._display_direction_service.async_set_direction(value)
+
+    @property
+    def displayed_temperature(self):
+        if self._displayed_temp_service is None:
+            return None
+        return self._displayed_temp_service.displayed_temperature
+
+    async def async_set_displayed_temperature(
+        self, value: "DisplayedTemperatureConfiguration.DisplayedTemperature"
+    ):
+        if self._displayed_temp_service is not None:
+            await self._displayed_temp_service.async_set_displayedTemperature(value)
+
+    @property
+    def terminal_type(self):
+        if self._terminal_config_service is None:
+            return None
+        return self._terminal_config_service.type
+
+    async def async_set_terminal_type(self, value: "TerminalConfiguration.Type"):
+        if self._terminal_config_service is not None:
+            await self._terminal_config_service.async_set_type(value)
+
+    @property
+    def terminal_temperature(self):
+        if self._terminal_config_service is None:
+            return None
+        return self._terminal_config_service.temperature
+
+    @property
+    def supported_terminal_types(self) -> list:
+        if self._terminal_config_service is None:
+            return []
+        return self._terminal_config_service.supported_types
 
 
 class SHCUniversalSwitch(SHCBatteryDevice):
@@ -1721,8 +2011,8 @@ MODEL_MAPPING = {
     "CAMERA_OUTDOOR_GEN2": SHCCameraOutdoorGen2,
     "ROOM_CLIMATE_CONTROL": SHCClimateControl,
     "TRV": SHCThermostat,
-    "TRV_GEN2": SHCThermostat,
-    "TRV_GEN2_DUAL": SHCThermostat,
+    "TRV_GEN2": SHCThermostatGen2,
+    "TRV_GEN2_DUAL": SHCThermostatGen2,
     "THB": SHCWallThermostat,
     "BWTH": SHCWallThermostat,
     "BWTH24": SHCWallThermostat,

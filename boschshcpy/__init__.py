@@ -27,6 +27,7 @@ from .device_helper import (
     SHCSmokeDetector,
     SHCSmokeDetectionSystem,
     SHCThermostat,
+    SHCThermostatGen2,
     SHCRoomThermostat2,
     SHCTwinguard,
     SHCUniversalSwitch,
@@ -51,14 +52,20 @@ from .emma import SHCEmma
 from .api_async import SHCAPIAsync, build_ssl_context  # noqa: F401
 from .session_async import SHCSessionAsync  # noqa: F401
 from .services_impl import (  # noqa: F401
+    DisplayConfiguration,
+    DisplayDirection,
+    DisplayedTemperatureConfiguration,
     EnergySavingModeService,
     LedBrightnessConfigurationService,
     PowerSwitchConfigurationService,
     PowerSwitchWarningService,
-    WalkTestService,
     SmartSensitivityControlService,
     SmokeSensitivityService,
+    SwitchConfiguration,
+    TerminalConfiguration,
     TwinguardNightlyPromiseService,
+    WalkTestService,
+    WallThermostatConfiguration,
 )
 
 __all__ = [
@@ -90,6 +97,7 @@ __all__ = [
     "SHCSmokeDetector",
     "SHCSmokeDetectionSystem",
     "SHCThermostat",
+    "SHCThermostatGen2",
     "SHCRoomThermostat2",
     "SHCTwinguard",
     "SHCUniversalSwitch",
@@ -111,12 +119,18 @@ __all__ = [
     "SHCAPIAsync",
     "build_ssl_context",
     "SHCSessionAsync",
+    "DisplayConfiguration",
+    "DisplayDirection",
+    "DisplayedTemperatureConfiguration",
     "EnergySavingModeService",
     "LedBrightnessConfigurationService",
     "PowerSwitchConfigurationService",
     "PowerSwitchWarningService",
-    "WalkTestService",
     "SmartSensitivityControlService",
     "SmokeSensitivityService",
+    "SwitchConfiguration",
+    "TerminalConfiguration",
     "TwinguardNightlyPromiseService",
+    "WalkTestService",
+    "WallThermostatConfiguration",
 ]
